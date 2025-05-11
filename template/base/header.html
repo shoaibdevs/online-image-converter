@@ -1,0 +1,63 @@
+<header id="header" class="fixed-top">
+  <div class="container d-flex align-items-center">
+
+    <h2 class="logo me-auto" style="margin-right: 20px;"><a href="/"><span>Simply</span>Converts</a></h2>
+
+    <nav id="navbar" class="navbar flex-grow-1" style="padding-left: 5%;">
+      <ul>
+<li><a href="/" class="">{{button.home}}</a></li>
+
+          {% for header in headers %}
+              {% if header.is_subheader %}
+                  <li class="dropdown"><a ><span>{{ header.title}}</span> <i class="bi bi-chevron-down"></i></a>
+                      <ul>
+                          {% for subheader in header.get_subheader %}
+                              <li><a href="/{{subheader.url}}">{{ subheader.title}}</a></li>
+                          {% endfor %}
+                      </ul>
+                  </li>
+              {% else %}
+                  <li><a href="{{ header.url }}" class="">{{header.title}}</a></li>
+              {% endif %}
+          {% endfor %}
+          <!-- <li><a href="{% url 'return_html_page' slug='pricing' %}" class="">{{button.pricing}}</a></li>
+          <li><a href="{% url 'return_html_page' slug='contact' %}" class="">{{button.contact}}</a></li> -->
+
+      </ul>
+  </nav>
+  <!-- {% if not check_user %}
+  <a href="{% url 'login' %}">{{button.login}}</a> &nbsp;&nbsp;&nbsp;
+  {% endif %}
+  <button class="login-btn" id="loginBtn">
+      {% if check_user %}
+      {{button.logout}}
+      {% else %}
+      {{button.register}}
+      {% endif %}
+  </button> -->
+
+  <i class="bi bi-list mobile-nav-toggle"></i>
+
+
+    <!-- <div class="header-social-links d-flex">
+      <a href="#" class="twitter"><i class="bu bi-twitter"></i></a>
+      <a href="#" class="facebook"><i class="bu bi-facebook"></i></a>
+      <a href="#" class="instagram"><i class="bu bi-instagram"></i></a>
+      <a href="#" class="linkedin"><i class="bu bi-linkedin"></i></i></a>
+    </div> -->
+
+  </div>
+
+</header>
+
+<script>
+  document.getElementById('loginBtn').addEventListener('click', () =>{
+    if(document.getElementById('loginBtn').innerHTML.includes('Register')){
+      window.location.href = "{% url 'register' %}"
+    } else {
+      if (confirm("Are you sure you want to log out?")) {
+        window.location.href = "{% url 'logout' %}";
+      }
+    }
+  })
+</script>

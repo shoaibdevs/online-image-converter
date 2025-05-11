@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>{% block title %}{% endblock %}|Simply Converts</title>
+  <meta name="title" content="{% block meta_title %}{% endblock %}">
+  <meta name="description" content="{% block meta_description %}{% endblock %}">
+  <meta name="keywords" content="{% block meta_keywords %}{% endblock %}">
+
+  <!-- Open Graph Tags -->
+  <meta property="og:title" content="{% block og_title %}{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}{% endblock %}">
+  <meta property="og:image" content="{% block og_image %}{% endblock %}">
+  <meta property="og:url" content="{% block og_url %}{% endblock %}">
+
+  <!-- Twitter Card Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{% block twitter_title %}{% endblock %}">
+  <meta name="twitter:description" content="{% block twitter_description %}{% endblock %}">
+  <meta name="twitter:image" content="{% block twitter_image %}{% endblock %}">
+
+  {% include 'base/css.html' %}
+
+  <!-- =======================================================
+  * Template Name: Company
+  * Updated: Jan 29 2024 with Bootstrap v5.3.2
+  * Template URL: https://bootstrapmade.com/company-free-html-bootstrap-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+  <style>
+    /* Hide Google Translate header */
+    .VIpgJd-ZVi9od-ORHb-OEVmcd {
+      display: none;
+    }
+  </style>
+</head>
+
+<body id="google_translate_element">
+
+  <!-- ======= Header ======= -->
+
+  {% include 'base/header.html' %}
+  <!-- End Header -->
+
+  <!-- ======= Hero Section ======= -->
+  <main id="main">
+    <!-- ======= Services Section ======= -->
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <!-- ======= Footer ======= -->
+  {% include 'base/footer.html' %}
+  <!-- End Footer -->
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  {% include 'base/js.html' %}
+  <div style="display: none;" id="urlText"></div>
+
+</body>
+
+</html>

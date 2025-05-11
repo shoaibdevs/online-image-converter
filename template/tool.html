@@ -1,0 +1,410 @@
+{% extends 'base/base.html' %}
+
+{% block meta_title %}{{ meta_title|default:page_data.title|default_if_none:"" }}{% endblock %}
+{% block meta_description %}{{ meta_description|default:page_data.short_desc|default_if_none:"" }}{% endblock %}
+{% block meta_keywords %}{{ meta_keywords|default_if_none:"" }}{% endblock %}
+{% block og_title %}{{ og_title|default:page_data.title|default_if_none:"" }}{% endblock %}
+{% block og_description %}{{ og_description|default:page_data.short_desc|default_if_none:"" }}{% endblock %}
+{% block og_image %}{{ og_image|default_if_none:"" }}{% endblock %}
+{% block og_url %}{{ request.build_absolute_uri|default_if_none:"" }}{% endblock %}
+{% block twitter_title %}{{ twitter_title|default:page_data.title|default_if_none:"" }}{% endblock %}
+{% block twitter_description %}{{ twitter_description|default:page_data.short_desc|default_if_none:"" }}{% endblock %}
+{% block twitter_image %}{{ twitter_image|default_if_none:"" }}{% endblock %}
+
+{% block content %}
+
+{% include 'base/breadcrumb.html' with title=page_data.title %}
+<div id="myModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close" id="myBtnClose">&times;</span>
+            <input type="text" required class="form-control" name="link" id="link" placeholder="Paste the link" required>
+            <button type="submit" id="download">Download</button>
+    </div>
+
+    </div>
+<section id="services" class="services section-bg">
+    <div class="container" data-aos="fade-up">
+        <div class="section-title" data-aos="fade-up">
+            <h2>{{ page_data.title }}</h2>
+            <p>{{ page_data.short_desc }}</p>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <img src="https://dummyimage.com/200x400/d5d5d5/000.png&text=Ads" />
+            </div>
+            <div class="col-md-8" data-aos="zoom-in" data-aos-delay="100" style="min-height:320px;">
+                <div class="icon-box iconbox-blue">
+                    <nav class="navbar flex-grow-1 ">
+                        <button id="file-upload-button" class="margin-left-card file-upload-button dropdown justify-content-center align-items-center"
+                            role="button"><span id="file-upload-button-text">Upload Files</span>
+                            <i class="bi bi-chevron-down"></i></a>
+                            <ul>
+                                <li><label for="local-file-upload">Local Device</label>
+                                    <input id="local-file-upload" accept="{{ file_format }}" multiple hidden type="file" />
+                                </li>
+
+                                <hr />
+
+                                <li id="myBtn">Paste the link</li>
+                            </ul>
+                        </button>
+                    </nav>
+                    <!-- The Modal -->
+
+                    <div class="table-container">
+                        <table style="width: 100%;">
+                            <tbody  id="file-table">
+
+                            </tbody>
+                        </table>
+                        <table id="file-table-footer-display" style="display: none;">
+                            <tr>
+                                <td colspan="4"> <!-- colspan should match the number of columns in your table -->
+                                    <button id="footer-button" class="buttonload" >
+                                        <i style="color: white; display: none;" id="showLoader" class="fa fa-refresh fa-spin"></i>Convert Files
+                                      </button>
+                                    <div id="deleteButton">
+
+                                    </div>
+
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+                </div>
+                <img class="mt-4" src="https://dummyimage.com/850x100/d5d5d5/000.png&text=Ads" />
+                <div class="iconbox-blue p-5 mt-4" style="background-color: #fff;">
+                    {{ page_data.description | safe}}
+                </div>
+            </div>
+            <div class="col-md-2">
+                <img src="https://dummyimage.com/200x400/d5d5d5/000.png&text=Ads" />
+            </div>
+        </div>
+
+    </div>
+</section>
+<script>
+let globalFileId = 0;
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Check if the cookie name matches the requested name
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+let globalFile = [];
+let localInput = document.getElementById('local-file-upload');
+var modal = document.getElementById("myModal");
+let footerButton = document.getElementById('footer-button');
+let link = document.getElementById('link')
+let downloadButton = document.getElementById('download');
+function openModal() {
+    modal.style.display = "block";
+}
+
+// Add event listener to the "Paste the link" text to open the modal
+document.getElementById('myBtn').addEventListener('click', openModal);
+function closeModel() {
+    modal.style.display = "none";
+}
+
+// Add event listener to the "Paste the link" text to open the modal
+document.getElementById('myBtnClose').addEventListener('click', closeModel);
+downloadButton.addEventListener('click', async () => {
+    if (link.value !== '') {
+        try {
+            // Fetch the resource from the link
+            let response = await fetch(link.value);
+            let blob = await response.blob();
+
+            // Get file name from the link
+            let fileName = link.value.substring(link.value.lastIndexOf('/') + 1);
+            let fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+
+            // If the file name is empty, assign a default name
+            if (!fileName.trim()) {
+                fileName = 'defaultFileName.';
+            }
+
+            // If the file extension is not empty, append it to the file name
+            if (fileExtension.trim()) {
+                fileName += `.${fileExtension}`;
+            }
+
+            // Create a File object from the blob
+            let file = new File([blob], fileName, { type: blob.type });
+            console.log(file)
+            updateTable([file]);
+            // globalFile.push(...files);
+            console.log(globalFile);
+
+            let buttonText = document.getElementById('file-upload-button-text');
+            buttonText.textContent = 'Add More Files';
+            let button = document.getElementById('file-upload-button');
+            button.classList.remove('margin-left-card');
+
+            let footerDispay = document.getElementById('file-table-footer-display');
+            footerDispay.style = 'display: block;'
+            modal.style.display = "none";
+        } catch (error) {
+            console.error('Error downloading file:', error);
+            alert('Please enter a valid link.');
+        }
+    }else{
+        alert('Please enter a valid link.');
+    }
+});
+
+
+footerButton.addEventListener('click', function () {
+        // Your button click event handler code here
+        let selectElements = document.querySelectorAll('.select-option');
+        let isAnyEmpty = false;
+        selectElements.forEach(function (select) {
+
+            if (!select.value && select.value == '') {
+                isAnyEmpty = true;
+                select.classList.add('option-error'); // Add error class to highlight the required fields
+            } else {
+                select.classList.remove('option-error');
+            }
+        });
+        if (!isAnyEmpty) {
+        console.log("submit",globalFile)
+
+        for (let i = 0; i < globalFile.length; i++) {
+            document.getElementById('showLoader').style = 'color: white; display: block;'
+            footerButton.disabled = true
+            let sigleFile = globalFile[i]
+            if (globalFile[i].format == 'text' || globalFile[i].format == 'TEXT'){
+                    Tesseract.recognize(globalFile[i].file).then(function(result) {
+                        const textContent = result.text;
+
+                        // Create a Blob object with the text content
+                        const blob = new Blob([textContent], { type: 'text/plain' });
+
+                        // Create a URL for the Blob object
+                        const blobUrl = URL.createObjectURL(blob);
+
+
+                        const url = URL.createObjectURL(blob);
+                        let parts = sigleFile.file.name.split('.');
+                        let fileName = parts[0];
+                        document.getElementById('downloadFile-'+sigleFile.id).innerHTML =
+
+                        `
+                        <a href=${blobUrl} download="${'convert_file.txt'}">
+                            Download
+                            </a>
+                        `
+                        globalFile = globalFile.filter((val) => val.id != sigleFile.id)
+
+                        document.getElementById('showLoader').style = 'color: white; display: none;'
+                        footerButton.disabled = false
+                return false;
+
+                    });
+                return false;
+            }
+            let formData = new FormData();
+            formData.append(`file`, globalFile[i].file);
+            formData.append(`format`, globalFile[i].format.toLocaleLowerCase());
+
+
+            const csrftoken = getCookie('csrftoken');
+
+            // Send the HTTP request with CSRF token
+            fetch('/convert/convert-file', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': csrftoken
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Handle successful response
+                    return response.blob()
+                } else {
+                    // Handle error response
+                    console.error('Failed to convert files');
+                }
+            })
+            .then(blob => {
+                // Create a download link for the converted image
+                console.log('Files converted successfully!', sigleFile);
+                const url = URL.createObjectURL(blob);
+                let parts = sigleFile.file.name.split('.');
+                let fileName = parts[0];
+                document.getElementById('downloadFile-'+sigleFile.id).innerHTML =
+
+                `
+                <a href=${url} download="${fileName+'.'+sigleFile.format}">
+                    Download
+                    </a>
+                `
+                globalFile = globalFile.filter((val) => val.id != sigleFile.id)
+
+                document.getElementById('showLoader').style = 'color: white; display: none;'
+                footerButton.disabled = false
+
+
+            })
+            .catch(error => {
+                // Handle fetch error
+                console.error('Fetch error:', error);
+                footerButton.disabled = false
+                document.getElementById('showLoader').style = 'color: white; display: none;'
+
+            });
+        }
+
+
+            // All select fields have been filled
+            // Perform further actions here, such as submitting the form
+        }
+    });
+// Add event listener for file input change
+localInput.addEventListener('change', function (event) {
+    // Get the selected files
+    const files = event.target.files;
+
+    // Update the table with file data
+    updateTable(files);
+    // globalFile.push(...files);
+    console.log(globalFile);
+
+    let buttonText = document.getElementById('file-upload-button-text');
+    buttonText.textContent = 'Add More Files';
+    let button = document.getElementById('file-upload-button');
+    button.classList.remove('margin-left-card');
+
+    let footerDispay = document.getElementById('file-table-footer-display');
+    footerDispay.style = 'display: block;'
+});
+
+function formatFileSize(size) {
+    if (size >= 1024 * 1024 * 1024) {
+        return (size / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
+    } else if (size >= 1024 * 1024) {
+        return (size / (1024 * 1024)).toFixed(2) + ' MB';
+    } else if (size >= 1024) {
+        return (size / 1024).toFixed(2) + ' KB';
+    } else {
+        return size + ' bytes';
+    }
+}
+
+
+function updateTable(files) {
+    let table = document.getElementById('file-table');
+    for (const file of files) {
+        let parts = file.name.split('.');
+        let ext = parts[parts.length - 1];
+        globalFileId += 1
+        addRow(file,globalFileId)
+        table.innerHTML+=addRow(file,globalFileId)
+        globalFile.push({id:globalFileId, format: '', file: file, file_format: ext})
+    }
+    check()
+
+}
+
+function addRow(rowData, id){
+    let parts = rowData.name.split('.');
+    let ext = parts[parts.length - 1];
+    let imageFormats = []
+    let target_format = "{{ target_format | escapejs}}"
+    if (target_format != '*'){
+        imageFormats = [target_format.toUpperCase()]
+    }else{
+        if(ext.toLocaleLowerCase() =='heic'){
+            imageFormats = ['JPG'];
+
+        } else{
+            imageFormats = ['JPG', 'PNG', 'MP3', 'text'];
+        }
+    }
+
+    imageFormats = imageFormats.filter((val) => val.toLocaleLowerCase() != ext.toLocaleLowerCase())
+    let options = ''
+    for(let i=0; i < imageFormats.length; i++){
+        options += `<option value=${imageFormats[i]}>${imageFormats[i]}</option>`
+    }
+
+    return `<tr id="${'rowFile-'+id}"">
+        <td>${rowData.name}</td>
+        <td>${formatFileSize(rowData.size)}</td>
+        <td>
+            <select class="select-option" id="select-format-${id}">
+                <option selected disabled>-------</option>
+                ${options}
+            </select>
+        </td>
+        <td id="${'downloadFile-'+id}">
+            <i id="${'deleteFile-'+id}" class="fa fa-close" style="font-size:23px;color:red"></i>
+        </td>
+    </tr>`
+}
+
+function check(){
+    const selectElements = document.querySelectorAll('[id^="select-format-"]');
+    const deleteButtons = document.querySelectorAll('[id^="deleteFile-"]');
+    console.log(selectElements)
+    selectElements.forEach(select => {
+    select.addEventListener('change', function() {
+        let newString = select.id.replace('select-format-', "");
+        let i =0;
+
+        for(i; i< globalFile.length; i++){
+            if(globalFile[i].id == Number(newString)){
+                globalFile[i].format = select.value
+                break;
+            }
+        }
+        console.log(globalFile)
+
+        });
+    });
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            let newString = button.id.replace('deleteFile-', "");
+            let i =0;
+            let newData = globalFile
+            globalFile = newData.filter(val => val.id != Number(newString))
+            if(globalFile.length == 0){
+                let buttonText = document.getElementById('file-upload-button-text');
+                buttonText.textContent = 'Upload Files';
+                let button = document.getElementById('file-upload-button');
+                button.classList.add('margin-left-card');
+                let footerDispay = document.getElementById('file-table-footer-display');
+                footerDispay.style = 'display: none;'
+            }
+            console.log(globalFile)
+            document.getElementById('rowFile-'+newString).remove()
+
+        });
+    });
+
+}
+
+
+
+
+
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends 'base/base.html' %}
+{% block title %}{{ meta_title|default:page_data.title|strip }}{% endblock %}
+{% block meta_description %}{{ meta_description|default:page_data.short_desc|strip }}{% endblock %}
+{% block meta_keywords %}{{ meta_keywords|strip }}{% endblock %}
+
+{% block og_title %}{{ og_title|default:page_data.title|strip }}{% endblock %}
+{% block og_description %}{{ og_description|default:page_data.short_desc|strip }}{% endblock %}
+{% block og_image %}{{ og_image|strip }}{% endblock %}
+{% block og_url %}{{ request.build_absolute_uri|strip }}{% endblock %}
+
+{% block twitter_title %}{{ twitter_title|default:page_data.title|strip }}{% endblock %}
+{% block twitter_description %}{{ twitter_description|default:page_data.short_desc|strip }}{% endblock %}
+{% block twitter_image %}{{ twitter_image|strip }}{% endblock %}
+{% block content %}
+{% include 'base/breadcrumb.html' with title='Contact' %}
+<!DOCTYPE html>
+<html lang="{{ request.session.lng_code }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_data.title }}</title>
+</head>
+<body>
+    <h1></h1>
+    <p></p>
+    <div></div>
+
+    <body>
+        <!-- Header -->
+        <header class="bg-primary text-white text-center py-5">
+            <div class="container">
+                <h1>{{ page_data.title }}</h1>
+                <p class="lead">Learn more about our company, our team, and our mission.</p>
+            </div>
+        </header>
+
+        <!-- Company Mission Section -->
+        <section class="py-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h2>Our Mission</h2>
+                        <p>{{ page_data.short_desc }}.</p>
+<p>{{ page_data.description|safe }}</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <!-- <section class="bg-light py-5">
+            <div class="container">
+                <div class="row text-center">
+                    <div class="col-lg-4">
+                        <img src="https://via.placeholder.com/150" alt="Team Member 1" class="img-fluid rounded-circle mb-3">
+                        <h3>John Doe</h3>
+                        <p class="text-muted">CEO</p>
+                        <p>John is the visionary behind our company, leading us towards success with his innovative ideas and unparalleled expertise.</p>
+                    </div>
+                    <div class="col-lg-4">
+                        <img src="https://via.placeholder.com/150" alt="Team Member 2" class="img-fluid rounded-circle mb-3">
+                        <h3>Jane Smith</h3>
+                        <p class="text-muted">CTO</p>
+                        <p>Jane is the technical genius who ensures our technology is cutting-edge and that our systems run smoothly.</p>
+                    </div>
+                    <div class="col-lg-4">
+                        <img src="https://via.placeholder.com/150" alt="Team Member 3" class="img-fluid rounded-circle mb-3">
+                        <h3>Mike Johnson</h3>
+                        <p class="text-muted">CFO</p>
+                        <p>Mike manages our finances with precision, making sure our company is fiscally healthy and on a path to growth.</p>
+                    </div>
+                </div>
+            </div>
+        </section> -->
+    </body>
+
+</body>
+</html>
+{% endblock %}

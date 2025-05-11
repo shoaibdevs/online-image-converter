@@ -1,0 +1,84 @@
+<footer id="footer">
+    <div class="footer-top">
+      <div class="container">
+        <div class="row">
+          {% for footer in footers %}
+            {% if footer.is_subfooter %}
+          <div class="col-lg-2 col-md-6 footer-links">
+            <h4>{{ footer.title}}</h4>
+            <ul>
+              {% for subfooter in footer.get_subfooter %}
+                <li><i class="bx bx-chevron-right"></i> <a href="/{{ subfooter.url}}">{{subfooter.title}}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% else %}
+                    <li><a class="">{{footer.title}}</a></li>
+                {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="language-select-container">
+      <select id="language-select" onchange="changeLanguage(this)" class="language-select">
+        {% for single_lng in languages_list %}
+          <option value="{{ single_lng.code }}" {% if single_lng.code == selected_lng %}selected{% endif %}>
+            {{ single_lng.name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+  </footer>
+<style>
+  .language-select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Style for the container of the select dropdown */
+.language-select-container {
+  padding: 20px;
+}
+</style>
+  <script>
+function changeLanguage(selectElement) {
+    var selectedLang = selectElement.value;
+    var currentUrl = window.location.pathname; // Get the current URL
+    
+    var form = document.createElement('form');
+    form.method = 'POST';
+    form.action = "{% url 'set_language' %}";
+    
+    // Create a hidden input field to send the language code
+    var languageInput = document.createElement('input');
+    languageInput.type = 'hidden';
+    languageInput.name = 'language';
+    languageInput.value = selectedLang;
+    form.appendChild(languageInput);
+    
+    // Include the current URL as a hidden input field
+    var urlInput = document.createElement('input');
+    urlInput.type = 'hidden';
+    urlInput.name = 'currentUrl';
+    urlInput.value = currentUrl;
+    form.appendChild(urlInput);
+    
+    // Include CSRF token if using Django's CSRF protection
+    var csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = 'csrfmiddlewaretoken';
+    csrfInput.value = '{{ csrf_token }}';
+    form.appendChild(csrfInput);
+    
+    // Submit the form
+    document.body.appendChild(form);
+    form.submit();
+
+}
+
+
+    </script>
