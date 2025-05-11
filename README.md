@@ -3,29 +3,23 @@
 The first thing to do is to clone the repository:
 
 ```sh
-$ git clone https://github.com/wework1988/globaltools
-$ cd globaltools
+$ git clone https://github.com/shoaibdevs/simply_convert
+$ cd simply_convert
 ```
 
-Create a virtual environment to install dependencies in and activate it:
+Create a docker container and run it:
 
 ```sh
-$ virtualenv env
-$ source env/bin/activate
+$ docker-compose build
+$ docker-compose up 
 ```
 
-Then install the dependencies:
+To stop dockor
 
 ```sh
-(env)$ pip install -r requirements.txt
+$ docker-compose down
 ```
-Note the `(env)` in front of the prompt. This indicates that this terminal
-session operates in a virtual environment set up by `virtualenv`.
 
-Once `pip` has finished downloading the dependencies:
-```sh
-(env)$ cd project
-(env)$ python manage.py runserver
-```
+
 And navigate to `http://127.0.0.1:8000/
- eval "$(/opt/homebrew/bin/brew shellenv)"
+
