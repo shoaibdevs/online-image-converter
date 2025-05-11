@@ -120,9 +120,9 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'globaltools',
-            'USER': 'wework',
-            'PASSWORD': 'password',
+            'NAME': 'mydatabase',
+            'USER': 'myuser',
+            'PASSWORD': 'mypassword',
             'HOST': 'localhost',
             'PORT': '',
         }
